@@ -4,11 +4,12 @@ from datetime import datetime
 print("AI Assistant Online")
 print(
     "Type 'help', 'time', 'joke', 'name', 'about', "
-    "'favorite color', 'advice', 'add', or 'exit'\n"
+    "'favorite color', 'advice', 'add', 'last message', 'how are you', 'who made you',or 'exit'\n"
 )
 
 user_name = ""
 favorite_color = ""
+last_message = ""
 
 jokes = [
     "Why do programmers prefer dark mode? Because light attracts bugs.",
@@ -25,7 +26,8 @@ advice_messages = [
 ]
 
 while True:
-    user_input = input("You: ").strip().lower()
+    user_input = input("You: ").strip()
+    command = user_input.lower()
 
     if user_input == "exit":
         print("AI: Shutting down...")
@@ -109,9 +111,16 @@ while True:
     elif user_input == "about":
         print("AI: I am a Python assistant created by Chance.")
         print("AI: I can remember information, tell jokes, give advice, and do math.")
-
+    elif command == "last message":
+        if last_message:
+            print("AI: Your previous message was: " + last_message)
+        else:
+            print("AI: I don't have a previous message to remember yet.")
     elif user_input == "":
         print("AI: Please type something.")
 
     else:
         print("AI: I don't understand that command yet. Type 'help' for options.")
+
+    if command not in ["last message", ""]:
+        last_message = user_input
