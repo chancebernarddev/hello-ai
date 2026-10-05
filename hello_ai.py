@@ -15,7 +15,8 @@ try:
 
     user_name = memory.get("name", "")
     favorite_color = memory.get("favorite_color", "")
-
+    last_message = memory.get("last_message", "")
+    message_history = memory.get("message_history", [])
 except (FileNotFoundError, json.JSONDecodeError):
     pass
 jokes = [
@@ -31,14 +32,16 @@ advice_messages = [
     "Working code is worth celebrating.",
     "You do not have to understand everything at once."
 ]
-def save_memory(user_name, favorite_color):
+def save_memory(user_name, favorite_color, last_message, message_history):
     memory = {
         "name": user_name,
-        "favorite_color": favorite_color
+        "favorite_color": favorite_color,
+        "last_message": last_message,
+        "message_history": message_history
     }
 
     with open("memory.json", "w") as file:
-        json.dump(memory, file)
+        json.dump(memory, file, indent=4)
 
 
 while True:
@@ -46,7 +49,7 @@ while True:
     command = user_input.lower()
     words = command.split()
     if command in ["exit", "quit", "bye"]:
-        save_memory(user_name, favorite_color)
+        save_memory(user_name, favorite_color, last_message, message_history)
         print("AI: Memory saved. Shutting down...")
         break
 
@@ -54,6 +57,7 @@ while True:
         print(
             "AI: Try: time, joke, hello (hi, hey), name, profile, "
             "about, what is my favorite color, advice, add (or: add 5 and 3), "
+            "subtract 10 and 4, multiply 5 and 3, divide 10 by 2, "          
             "how are you, what are you, favorite color, "
 
             "last message, history, clear history, who made you, "
@@ -75,7 +79,7 @@ while True:
 
         if new_name:
             user_name = new_name
-            save_memory(user_name, favorite_color)
+            save_memory(user_name, favorite_color, last_message, message_history)
             print("AI: Nice to meet you, " + user_name + "!")
         else:
             print("AI: You didn't enter a name. I'll keep the previous one.")
@@ -92,7 +96,7 @@ while True:
 
         if new_color:
             favorite_color = new_color
-            save_memory(user_name, favorite_color)
+            save_memory(user_name, favorite_color, last_message, message_history)
             print("AI: I'll remember that your favorite color is " + favorite_color + ".")
         else:
             print("AI: You didn't enter a color. I'll keep the previous one.")
@@ -102,6 +106,7 @@ while True:
             print("AI: Your favorite color is " + favorite_color + ".")
         else:
             print("AI: You haven't told me your favorite color yet.")
+
     elif len(words) == 4 and words[0] == "add" and words[2] == "and":
         try:
             first_number = float(words[1])
@@ -111,6 +116,37 @@ while True:
 
         except ValueError:
             print("AI: Please enter valid numbers, like: add 5 and 3")
+
+    elif len(words) == 4 and words[0] == "subtract" and words[2] == "and":
+        try:
+            first_number = float(words[1])
+            second_number = float(words[3])
+            total = first_number - second_number
+            print("AI: The answer is", total)
+
+        except ValueError:
+            print("AI: Please enter valid numbers, like: subtract 10 and 4")
+    elif len(words) == 4 and words[0] == "multiply" and words[2] == "and":
+        try:
+            first_number = float(words[1])
+            second_number = float(words[3])
+            total = first_number * second_number
+            print("AI: The answer is", total)
+
+        except ValueError:
+            print("AI: Please enter valid numbers, like: multiply 5 and 3")
+    elif len(words) == 4 and words[0] == "divide" and words[2] == "by":
+        try:
+            first_number = float(words[1])
+            second_number = float(words[3])
+            total = first_number / second_number
+            print("AI: The answer is", total)
+
+        except ValueError:
+            print("AI: Please enter valid numbers, like: divide 10 by 2")
+
+        except ZeroDivisionError:
+            print("AI: You can't divide by zero.")
     elif command == "add":
         first_number = input("AI: Enter the first number.\nYou: ")
         second_number = input("AI: Enter the second number.\nYou: ")
@@ -146,7 +182,7 @@ while True:
         print("AI: I am a Python assistant created by Chance.")
         print("AI: I can remember information, tell jokes, give advice, and do math.")
 
-    elif command == "history":
+    elif command == "history":    
         if message_history:
             print("AI: Here is your message history:")
             for number, message in enumerate(message_history, start=1):
@@ -172,3 +208,5 @@ while True:
     if command not in ["last message", "history", "clear history", ""]:
         last_message = user_input
         message_history.append(user_input)
+
+    save_memory(user_name, favorite_color, last_message, message_history)
